@@ -1,0 +1,9 @@
+[
+  {
+    "name": "EDIT_ME_official_careers_page",
+    "url": "https://example.com/add-real-url",
+    "title_selector": "h1",
+    "description_selector": "main",
+    "card_selector": null
+  }
+]
