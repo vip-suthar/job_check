@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+<h1 class="h3 mb-3">Dashboard</h1>
+<div class="row text-center mb-4">
+  <div class="col">
+    <div class="fs-3">{{ stats.total }}</div>
+    <small class="text-body-secondary">Checks</small>
+  </div>
+  <div class="col">
+    <div class="fs-3">{{ stats.flagged_pct }}%</div>
+    <small class="text-body-secondary">Red flags found ({{ stats.flagged }})</small>
+  </div>
+  <div class="col">
+    <div class="fs-3">{{ stats.correct }} / {{ stats.incorrect }}</div>
+    <small class="text-body-secondary">Feedback: right / wrong</small>
+  </div>
+</div>
+{% for chart in charts %}
+<img class="img-fluid mb-4" src="data:image/png;base64,{{ chart }}" alt="Dashboard chart" />
+{% else %}
+<p>No checks yet. <a href="{{ url_for('main.index') }}">Check a posting</a></p>
+{% endfor %}
+{% endblock %}

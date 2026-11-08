@@ -1,8 +1,8 @@
 import re
 
 from flask_wtf import FlaskForm
-from wtforms import TextAreaField
-from wtforms.validators import DataRequired, Length
+from wtforms import RadioField, TextAreaField
+from wtforms.validators import DataRequired, Length, Optional
 
 MIN_LENGTH, MAX_LENGTH = 50, 10_000
 
@@ -22,4 +22,15 @@ class CheckForm(FlaskForm):
         filters=[clean_whitespace],
         validators=[DataRequired(), Length(min=MIN_LENGTH, max=MAX_LENGTH)],
         render_kw={"maxlength": MAX_LENGTH, "rows": 12},
+    )
+
+
+class FeedbackForm(FlaskForm):
+    user_says = RadioField(choices=[("correct", "Yes"), ("incorrect", "No")],
+                           validators=[DataRequired()])
+    comment = TextAreaField(
+        "Comment (optional)",
+        filters=[clean_whitespace],
+        validators=[Optional(), Length(max=1000)],
+        render_kw={"maxlength": 1000, "rows": 2},
     )

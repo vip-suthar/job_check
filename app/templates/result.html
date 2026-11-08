@@ -24,9 +24,32 @@ block content %} {% if check.indicator == "red_flags" %}
 {% endif %}
 
 <h2 class="h5">Posting text</h2>
-<div class="border rounded p-3 mb-4" style="white-space: pre-wrap">
-  {{ highlighted }}
-</div>
+<div class="border rounded p-3 mb-4" style="white-space: pre-wrap">{{ highlighted }}</div>
+
+<form
+  class="card card-body mb-4"
+  method="post"
+  action="{{ url_for('main.feedback', check_id=check.id) }}"
+>
+  {{ feedback_form.hidden_tag() }}
+  <h2 class="h5 card-title">Was this result right?</h2>
+  <div class="mb-2">
+    {{ feedback_form.comment.label(class="form-label") }} {{
+    feedback_form.comment(class="form-control") }}
+  </div>
+  <div class="d-flex gap-2">
+    {% for value, label in feedback_form.user_says.choices %}
+    <button
+      type="submit"
+      name="user_says"
+      value="{{ value }}"
+      class="btn btn-outline-secondary"
+    >
+      {{ label }}
+    </button>
+    {% endfor %}
+  </div>
+</form>
 
 <div class="card mb-3">
   <div class="card-body">
@@ -52,7 +75,8 @@ block content %} {% if check.indicator == "red_flags" %}
 
 <p class="small text-body-secondary">
   JobCheck is a screening aid, not a verdict. It looks for common warning signs
-  cannot prove that a posting is genuine or fake.
+  and cannot prove that a posting is genuine or fake. It is designed for
+  English text and is likely to miss postings written in Hindi or Hinglish.
 </p>
 <a class="btn btn-outline-primary" href="{{ url_for('main.index') }}"
   >Check another posting</a

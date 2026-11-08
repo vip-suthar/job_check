@@ -37,3 +37,13 @@ class RuleHit(db.Model):
     # correctly after the rules change
     span_start = db.Column(db.Integer, nullable=False)
     span_end = db.Column(db.Integer, nullable=False)
+
+
+class Feedback(db.Model):
+    __tablename__ = "feedback"
+
+    id = db.Column(db.Integer, primary_key=True)
+    check_id = db.Column(db.Integer, db.ForeignKey("checks.id"), nullable=False, index=True)
+    user_says = db.Column(db.String(10), nullable=False)  # correct or incorrect
+    comment = db.Column(db.Text)
+    created_at = db.Column(db.DateTime, nullable=False, default=datetime.now)

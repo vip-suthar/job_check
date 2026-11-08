@@ -12,6 +12,3 @@ backups/
 
 # large downloaded data
 data/raw/
-
-# no tests yet, will write it later
-tests/*
