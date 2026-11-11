@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}Bulk check{% endblock %}
+{% block content %}
+<h1 class="h3">Check many postings from Excel</h1>
+<p>
+  Upload an <code>.xlsx</code> file with one posting per row (up to 500 rows).
+  The first row must be a header. Postings are read from the column named
+  <em>text</em>, <em>posting</em>, <em>description</em> or <em>message</em>,
+  or from the first column if none of these exist.
+</p>
+<p>
+  You get the same workbook back with result, score and red-flag columns added,
+  flagged rows highlighted, and a summary sheet.
+</p>
+<form method="post" enctype="multipart/form-data" novalidate>
+  {{ form.hidden_tag() }}
+  <div class="mb-3">
+    {{ form.file.label(class="form-label") }} {{ form.file(class="form-control"
+    + (" is-invalid" if form.file.errors else ""), accept=".xlsx") }} {% for
+    error in form.file.errors %}
+    <div class="invalid-feedback">{{ error }}</div>
+    {% endfor %}
+  </div>
+  <button type="submit" class="btn btn-primary">Check workbook</button>
+</form>
+<p class="small text-body-secondary mt-4">
+  JobCheck is a screening aid, not a verdict. "No common red flags found" does
+  not mean a posting is safe.
+</p>
+{% endblock %}

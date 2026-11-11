@@ -20,7 +20,7 @@ from bs4 import BeautifulSoup
 USER_AGENT = "JobCheckResearchBot/0.1 (educational project; contact: project team)"
 FIELDS = [
     "title", "text", "source_url", "source_type", "date_collected",
-    "label", "label_evidence", "labeller_1", "labeller_2", "notes"
+    "label", "label_evidence", "labeller_1", "labeller_2", "label_1", "label_2", "notes"
 ]
 
 def allowed_by_robots(url: str, session: requests.Session) -> bool:
@@ -40,16 +40,19 @@ def allowed_by_robots(url: str, session: requests.Session) -> bool:
         print(f"SKIP: robots.txt check failed for {url}: {exc}")
         return False
 
-def extract_page(url: str, session: requests.Session) -> tuple[str, str]:
-    response = session.get(url, timeout=20, headers={"User-Agent": USER_AGENT})
-    response.raise_for_status()
-    soup = BeautifulSoup(response.text, "html.parser")
+def page_text(html: str | bytes) -> tuple[str, str]:
+    soup = BeautifulSoup(html, "html.parser")
     for element in soup(["script", "style", "noscript", "svg", "nav", "footer", "header"]):
         element.decompose()
     title = soup.title.get_text(" ", strip=True) if soup.title else ""
     # Keep page text bounded; listing pages can contain many unrelated elements.
     text = " ".join(soup.get_text(" ", strip=True).split())[:20000]
     return title, text
+
+def extract_page(url: str, session: requests.Session) -> tuple[str, str]:
+    response = session.get(url, timeout=20, headers={"User-Agent": USER_AGENT})
+    response.raise_for_status()
+    return page_text(response.text)
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="Collect permitted public career-page text.")

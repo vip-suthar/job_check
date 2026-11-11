@@ -1,0 +1,5 @@
+# Review each URL and the site's terms before collecting.
+# These are starting points for manual review; pages may change or block automated access.
+https://www.isro.gov.in/Careers.html
+https://www.drdo.gov.in/careers
+https://www.ncs.gov.in/

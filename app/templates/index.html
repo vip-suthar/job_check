@@ -21,6 +21,23 @@
   <button type="submit" class="btn btn-primary">Check posting</button>
 </form>
 
+<form
+  class="mt-4"
+  method="post"
+  action="{{ url_for('main.check_url') }}"
+  novalidate
+>
+  {{ url_form.hidden_tag() }} {{ url_form.url.label(class="form-label") }}
+  <div class="input-group">
+    {{ url_form.url(class="form-control", placeholder="https://") }}
+    <button type="submit" class="btn btn-outline-primary">Fetch and check</button>
+  </div>
+  <div class="form-text">
+    Works only for public pages that do not need JavaScript. If it fails, paste
+    the text above.
+  </div>
+</form>
+
 <script>
   // clean all whitespaces before counting characters
   const clean = (s) =>

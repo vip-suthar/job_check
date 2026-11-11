@@ -14,6 +14,7 @@ def create_app(config=None):
     app.config.update(
         SECRET_KEY=os.environ.get("SECRET_KEY") or secrets.token_hex(32),
         SQLALCHEMY_DATABASE_URI="sqlite:///jobcheck.db",  # relative to instance/
+        MAX_CONTENT_LENGTH=5 * 1024 * 1024,
     )
     app.config.update(config or {})
     os.makedirs(app.instance_path, exist_ok=True)
