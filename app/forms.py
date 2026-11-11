@@ -1,8 +1,9 @@
 import re
 
 from flask_wtf import FlaskForm
-from wtforms import RadioField, TextAreaField
-from wtforms.validators import DataRequired, Length, Optional
+from flask_wtf.file import FileAllowed, FileField, FileRequired
+from wtforms import RadioField, TextAreaField, URLField
+from wtforms.validators import URL, DataRequired, Length, Optional
 
 MIN_LENGTH, MAX_LENGTH = 50, 10_000
 
@@ -34,3 +35,12 @@ class FeedbackForm(FlaskForm):
         validators=[Optional(), Length(max=1000)],
         render_kw={"maxlength": 1000, "rows": 2},
     )
+
+
+class UrlForm(FlaskForm):
+    url = URLField("Or check a posting from a link", validators=[DataRequired(), URL()])
+
+
+class BulkForm(FlaskForm):
+    file = FileField("Excel file (.xlsx)",
+                     validators=[FileRequired(), FileAllowed(["xlsx"], "Upload an .xlsx file.")])

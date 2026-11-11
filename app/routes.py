@@ -1,10 +1,16 @@
-from flask import Blueprint, current_app, flash, redirect, render_template, request, url_for
+from io import BytesIO
+
+import requests
+from flask import Blueprint, current_app, flash, redirect, render_template, request, send_file, url_for
 from marshmallow import ValidationError
 from sqlalchemy import select
 from werkzeug.exceptions import HTTPException
+from werkzeug.utils import secure_filename
 
 from app import dashboard, db
-from app.forms import CheckForm, FeedbackForm
+from app.excel import check_workbook, read_workbook
+from app.fetch import FetchError, fetch_text
+from app.forms import MAX_LENGTH, MIN_LENGTH, BulkForm, CheckForm, FeedbackForm, UrlForm, clean_whitespace
 from app.models import Check, Feedback, RuleHit
 from app.schemas import CheckRequestSchema, CheckSchema
 from detector.rules import EXPLANATIONS, check, highlight
@@ -41,7 +47,48 @@ def index():
     if form.validate_on_submit():
         record = save_check(form.text.data, "form")
         return redirect(url_for("main.result", check_id=record.id))
-    return render_template("index.html", form=form)
+    return render_template("index.html", form=form, url_form=UrlForm())
+
+
+@bp.route("/check-url", methods=["POST"])
+def check_url():
+    form = UrlForm()
+    if not form.validate_on_submit():
+        flash("Please enter a valid web address, starting with http:// or https://.", "warning")
+        return redirect(url_for("main.index"))
+    try:
+        text = clean_whitespace(fetch_text(form.url.data))[:MAX_LENGTH]
+    except (FetchError, requests.RequestException) as e:
+        current_app.logger.info("url fetch failed: %s", type(e).__name__)
+        text = ""
+    if len(text) < MIN_LENGTH:
+        flash("Could not read a posting from that link. The site may block automated access or need "
+              "JavaScript. Please copy the posting text and paste it below.", "warning")
+        return redirect(url_for("main.index"))
+    record = save_check(text, "url")
+    return redirect(url_for("main.result", check_id=record.id))
+
+
+@bp.route("/bulk", methods=["GET", "POST"])
+def bulk():
+    form = BulkForm()
+    if form.validate_on_submit():
+        upload = form.file.data
+        try:
+            wb = read_workbook(upload)
+        except ValueError as e:
+            form.file.errors.append(str(e))
+        else:
+            counts = check_workbook(wb, save_check)
+            current_app.logger.info("bulk red_flags=%d no_flags=%d skipped=%d",
+                                    counts["red_flags"], counts["no_flags"], counts["skipped"])
+            out = BytesIO()
+            wb.save(out)
+            out.seek(0)
+            name = secure_filename(upload.filename).rsplit(".", 1)[0] or "postings"
+            return send_file(out, as_attachment=True, download_name=f"{name}_jobcheck.xlsx",
+                             mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+    return render_template("bulk.html", form=form)
 
 
 @bp.route("/check/<int:check_id>")
