@@ -33,11 +33,22 @@ Returns `201` with the check's `id`, `score`, `indicator`, `label` and `hits` (e
 pytest
 ```
 
+## Detector
+
+A posting is flagged if its rule score reaches `THRESHOLD` (`detector/rules.py`) or the ML model's probability reaches `MODEL_THRESHOLD` (`detector/verdict.py`). Without a trained model the app uses the rules alone.
+
+```bash
+python prepare_emscad.py                # data/raw/emscad.csv -> data/processed/emscad_{train,dev,test}.csv
+python -m detector.model                # train the ML baseline -> instance/model.joblib
+```
+
+Restart the app after training. `notebooks/evaluation.ipynb` compares rules, ML and both on the dev splits, for choosing the thresholds; its final section on the held-out test splits runs only when `FINAL_EVALUATION = True`.
+
 ## Layout
 
 ```
 app/        Flask app: routes, forms, models, templates
-detector/   rule engine (rules.py)
+detector/   rule engine (rules.py), ML baseline (model.py), combined verdict (verdict.py)
 scripts/    setup and automation shell scripts
 tests/      pytest tests
 data/       datasets (data/raw is not committed)
