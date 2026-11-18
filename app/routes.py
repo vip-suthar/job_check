@@ -13,7 +13,8 @@ from app.fetch import FetchError, fetch_text
 from app.forms import MAX_LENGTH, MIN_LENGTH, BulkForm, CheckForm, FeedbackForm, UrlForm, clean_whitespace
 from app.models import Check, Feedback, RuleHit
 from app.schemas import CheckRequestSchema, CheckSchema
-from detector.rules import EXPLANATIONS, check, highlight
+from detector.rules import EXPLANATIONS, highlight
+from detector.verdict import check
 
 bp = Blueprint("main", __name__)
 
@@ -24,6 +25,7 @@ def save_check(text, source):
         source=source,
         text=text,
         rule_score=result["score"],
+        model_probability=result["probability"],
         indicator=result["indicator"],
         hits=[
             RuleHit(rule_id=h["rule_id"], matched_text=h["matched_text"],
