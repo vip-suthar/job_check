@@ -42,5 +42,5 @@ class UrlForm(FlaskForm):
 
 
 class BulkForm(FlaskForm):
-    file = FileField("Excel file (.xlsx)",
-                     validators=[FileRequired(), FileAllowed(["xlsx"], "Upload an .xlsx file.")])
+    file = FileField("Excel or CSV file (.xlsx, .csv)",
+                     validators=[FileRequired(), FileAllowed(["xlsx", "csv"], "Upload an .xlsx or .csv file.")])

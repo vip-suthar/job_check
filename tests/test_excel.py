@@ -1,5 +1,6 @@
+import csv
 from datetime import datetime
-from io import BytesIO
+from io import BytesIO, StringIO
 
 from openpyxl import Workbook, load_workbook
 
@@ -39,13 +40,34 @@ def test_bulk_adds_results_and_summary(client):
     assert [c.source for c in db.session.query(Check)] == ["bulk", "bulk"]
 
 
+def test_bulk_accepts_csv(client):
+    buf = StringIO()
+    csv.writer(buf).writerows([["id", "Posting"], [1, SCAM], [2, GENUINE]])
+    data = BytesIO(buf.getvalue().encode("utf-8-sig"))
+    response = client.post("/bulk", data={"file": (data, "postings.csv")}, content_type="multipart/form-data")
+    assert response.status_code == 200
+    assert "postings_jobcheck.xlsx" in response.headers["Content-Disposition"]
+
+    ws = load_workbook(BytesIO(response.data)).worksheets[0]
+    assert [c.value for c in ws[1]] == ["id", "Posting", "JobCheck result", "Score", "Red flags"]
+    assert ws["C2"].value == "Red flags found (2)"
+    assert ws["C3"].value == "No common red flags found"
+    assert [c.source for c in db.session.query(Check)] == ["bulk", "bulk"]
+
+
 def test_bulk_rejects_bad_files(client):
     response = client.post("/bulk", data={"file": (BytesIO(b"not excel"), "x.xlsx")},
                            content_type="multipart/form-data")
     assert b"Could not read this file" in response.data
-    response = client.post("/bulk", data={"file": (BytesIO(b"a,b"), "x.csv")},
+    response = client.post("/bulk", data={"file": (BytesIO(b"a,b"), "x.txt")},
                            content_type="multipart/form-data")
-    assert b"Upload an .xlsx file." in response.data
+    assert b"Upload an .xlsx or .csv file." in response.data
+    response = client.post("/bulk", data={"file": (BytesIO(b"\xff\xfe\x00bad"), "x.csv")},
+                           content_type="multipart/form-data")
+    assert b"Could not read this file" in response.data
+    big_csv = BytesIO(("text\n" + f'"{SCAM}"\n' * 501).encode())
+    response = client.post("/bulk", data={"file": (big_csv, "x.csv")}, content_type="multipart/form-data")
+    assert b"more than 500 postings" in response.data
     wb = Workbook()
     for _ in range(502):
         wb.active.append([SCAM])

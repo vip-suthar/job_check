@@ -29,7 +29,7 @@ Returns `201` with the check's `id`, `score`, `indicator`, `label` and `hits` (e
 
 ## Bulk Excel mode and URL input
 
-`/bulk` takes an `.xlsx` file with a header row and one posting per row (up to 500) and returns the same workbook with result, score and red-flag columns, flagged rows highlighted, and a summary sheet.
+`/bulk` takes an `.xlsx` or UTF-8 `.csv` file with a header row and one posting per row (up to 500) and returns the rows as an Excel workbook with result, score and red-flag columns, flagged rows highlighted, and a summary sheet.
 The home page also accepts a link to a public posting; if the site blocks automated access or needs JavaScript, paste the text instead.
 
 ## Data and automation scripts

@@ -1,5 +1,8 @@
+import csv
 from collections import Counter
 from datetime import date, datetime, timedelta
+from io import StringIO
+from itertools import islice
 
 from openpyxl import Workbook, load_workbook
 from openpyxl.chart import BarChart, Reference
@@ -29,11 +32,17 @@ def style_header(ws, widths, row=1):
         ws.column_dimensions[column].width = width
 
 
-def read_workbook(stream):
+def read_workbook(upload):
     try:
-        wb = load_workbook(stream)
+        if upload.filename.lower().endswith(".csv"):
+            wb = Workbook()
+            rows = csv.reader(StringIO(upload.read().decode("utf-8-sig"), newline=""))
+            for row in islice(rows, MAX_ROWS + 2):
+                wb.active.append(row)
+        else:
+            wb = load_workbook(upload)
     except Exception:  # openpyxl raises many different errors for non-xlsx or corrupt files
-        raise ValueError("Could not read this file as an Excel workbook.") from None
+        raise ValueError("Could not read this file as an Excel workbook or UTF-8 CSV file.") from None
     if wb.worksheets[0].max_row - 1 > MAX_ROWS:
         raise ValueError(f"The first sheet has more than {MAX_ROWS} postings. Split it into smaller files.")
     return wb
