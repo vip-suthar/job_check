@@ -42,11 +42,8 @@ def is_public_host(host):
 
 
 def download(url):
-    """Downloads a public url and returns (final url, content type, body).
-
-    Redirects are followed one at a time so every new address is checked too. Otherwise a
-    link could make our server open its own network (localhost, 192.168.x.x, cloud metadata).
-    """
+    #Downloads a public url and returns (final url, content type, body).
+    
     # TODO: requests looks the host up again, so DNS rebinding is not covered. Pin the checked IP
     # before putting this on a public server.
     for _ in range(MAX_REDIRECTS + 1):
