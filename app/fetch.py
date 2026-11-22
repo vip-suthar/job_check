@@ -54,7 +54,7 @@ def download(url):
         if parsed.scheme not in ("http", "https") or not parsed.hostname or not is_public_host(parsed.hostname):
             raise FetchError("only public http(s) addresses can be fetched")
         try:
-            with requests.get(url, timeout=10, stream=True, allow_redirects=False, headers=HEADERS) as response:
+            with requests.get(url, timeout=10, stream=True, allow_redirects=False, headers=HEADERS verify=False) as response:
                 if response.is_redirect:
                     url = urljoin(url, response.headers["Location"])
                     continue
