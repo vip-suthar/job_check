@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
-"""Polite starter scraper for public official careers pages.
+"""Polite scraper for public official careers pages.
 
-Before running, edit scrapers/sources.json with a real URL and selectors.
-Check the site's terms and robots.txt. This script skips URLs that robots.txt
+This script skips URLs that robots.txt
 disallows or whose robots.txt cannot be checked.
 """
 import json
