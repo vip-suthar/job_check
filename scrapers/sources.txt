@@ -1,5 +1,24 @@
 # Review each URL and the site's terms before collecting.
 # These are starting points for manual review; pages may change or block automated access.
-https://www.isro.gov.in/Careers.html
-https://www.drdo.gov.in/careers
+
+# Government recruitment portals
 https://www.ncs.gov.in/
+https://www.upsc.gov.in/recruitment
+https://ssc.gov.in/
+https://www.isro.gov.in/Careers.html
+https://www.barc.gov.in/careers.html
+
+# Public sector undertakings (PSUs)
+https://www.npcilcareers.co.in/
+https://bel-india.in/job-notifications/
+https://careers.bhel.in/
+https://www.ongcindia.com/web/eng/career
+https://careers.ntpc.co.in/
+https://gailonline.com/
+https://hal-india.co.in/Careers
+https://www.coalindia.in/career/
+
+# Public-sector and research recruitment
+https://www.drdo.gov.in/careers
+https://www.iocl.com/latest-job-opening
+https://www.powergrid.in/job-opportunities

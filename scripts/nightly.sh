@@ -24,7 +24,7 @@ if [ ! -x "$PYTHON" ]; then
 fi
 
 # One file per night, so repeated runs never duplicate rows in earlier files
-run "$PYTHON" scrape_pages.py --output "data/raw/scraped_$(date +%F).csv"
+run "$PYTHON" scrapers/scrape_pages.py --output "data/raw/scraped_$(date +%F).csv"
 run scripts/backup.sh
 run scripts/rotate_logs.sh
 if [ "$(date +%d)" = "01" ]; then

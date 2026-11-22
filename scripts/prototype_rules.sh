@@ -23,7 +23,7 @@ PATTERNS=(
 )
 
 if [ ! -f "$INPUT" ]; then
-  echo "Dataset not found: $INPUT (run prepare_emscad.py first, or pass a CSV path)" >&2
+  echo "Dataset not found: $INPUT (run scripts/prepare_emscad.py first, or pass a CSV path)" >&2
   exit 1
 fi
 

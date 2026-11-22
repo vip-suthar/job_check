@@ -37,7 +37,7 @@ The home page also accepts a link to a public posting; if the site blocks automa
 Run from the project root.
 
 ```bash
-python scrape_pages.py                          # scrape permitted pages in scrapers/sources.txt
+python scrapers/scrape_pages.py                 # scrape permitted pages in scrapers/sources.txt
 scripts/prototype_rules.sh [csv]                # candidate pattern hit rates, fraud vs genuine
 python scripts/freeze_indian_split.py           # data/indian_labelled.csv -> data/processed/indian_{dev,test}.csv
 scripts/backup.sh [keep]                        # timestamped database backup in backups/
@@ -63,7 +63,7 @@ pytest
 A posting is flagged if its rule score reaches `THRESHOLD` (`detector/rules.py`) or the ML model's probability reaches `MODEL_THRESHOLD` (`detector/verdict.py`). Without a trained model the app uses the rules alone.
 
 ```bash
-python prepare_emscad.py                # data/raw/emscad.csv -> data/processed/emscad_{train,dev,test}.csv
+python scripts/prepare_emscad.py        # data/raw/emscad.csv -> data/processed/emscad_{train,dev,test}.csv
 python -m detector.model                # train the ML baseline -> instance/model.joblib
 ```
 

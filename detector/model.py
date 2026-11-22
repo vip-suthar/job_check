@@ -48,7 +48,7 @@ def main():
     args = parser.parse_args()
     source = Path(args.input)
     if not source.exists():
-        raise SystemExit(f"Training data not found: {source}\nRun prepare_emscad.py first.")
+        raise SystemExit(f"Training data not found: {source}\nRun scripts/prepare_emscad.py first.")
     df = pd.read_csv(source, low_memory=False)
     model = train(posting_text(df), df["fraudulent"].astype(int))
     output = Path(args.output)

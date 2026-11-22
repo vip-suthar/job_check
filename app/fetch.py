@@ -9,7 +9,7 @@ import requests
 from bs4 import BeautifulSoup
 
 from app.forms import clean_whitespace
-from scrape_pages import USER_AGENT
+from scrapers.scrape_pages import USER_AGENT
 
 MAX_BYTES = 2_000_000
 MAX_REDIRECTS = 5
