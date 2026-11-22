@@ -2,7 +2,7 @@ import re
 
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileAllowed, FileField, FileRequired
-from wtforms import RadioField, TextAreaField, URLField
+from wtforms import BooleanField, RadioField, TextAreaField, URLField
 from wtforms.validators import URL, DataRequired, Length, Optional
 
 MIN_LENGTH, MAX_LENGTH = 50, 10_000
@@ -39,6 +39,7 @@ class FeedbackForm(FlaskForm):
 
 class UrlForm(FlaskForm):
     url = URLField("Or check a posting from a link", validators=[DataRequired(), URL()])
+    single = BooleanField()  # set by the listing page to check the page itself, not the postings it links to
 
 
 class BulkForm(FlaskForm):

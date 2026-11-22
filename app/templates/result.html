@@ -8,6 +8,11 @@ block content %} {% if check.indicator == "red_flags" %}
   <h1 class="h4 alert-heading">{{ check.label }}</h1>
   <p class="mb-0">This does not mean the posting is safe.</p>
 </div>
+{% endif %} {% if check.source_url %}
+<p class="small text-body-secondary text-break">
+  Text read from
+  <a href="{{ check.source_url }}" rel="nofollow noopener noreferrer" target="_blank">{{ check.source_url }}</a>
+</p>
 {% endif %} {% if flags %}
 <h2 class="h5">Red flags</h2>
 <ul class="list-group mb-4">

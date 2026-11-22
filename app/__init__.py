@@ -5,6 +5,7 @@ from logging.handlers import WatchedFileHandler
 
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import inspect, text
 
 db = SQLAlchemy()
 
@@ -24,10 +25,20 @@ def create_app(config=None):
     app.register_blueprint(routes.bp)
     with app.app_context():
         db.create_all()
+        add_new_columns()
 
     if not app.testing:
         setup_logging(app)
     return app
+
+
+def add_new_columns():
+    # create_all() only makes missing tables, it does not add columns to old ones,
+    # so a jobcheck.db made before source_url existed gets it added here
+    columns = [c["name"] for c in inspect(db.engine).get_columns("checks")]
+    if "source_url" not in columns:
+        with db.engine.begin() as conn:
+            conn.execute(text("ALTER TABLE checks ADD COLUMN source_url VARCHAR(2000)"))
 
 
 def setup_logging(app):
