@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block title %}Postings on a page{% endblock %}
+{% block content %}
+<h1 class="h3">This page lists {{ total }} postings</h1>
+<p class="text-body-secondary text-break">
+  <a href="{{ page_url }}" rel="nofollow noopener noreferrer" target="_blank">{{ page_url }}</a>
+</p>
+<p>
+  Each posting was opened and checked on its own, so the red flags of one posting
+  are not mixed up with another.
+  {% if checked %}
+  {{ flagged }} of the {{ checked }} checked postings have red flags.
+  {% else %}
+  None of the postings could be opened.
+  {% endif %}
+  {% if total > items|length %}Only the first {{ items|length }} are listed below.{% endif %}
+</p>
+
+<div class="list-group mb-4">
+  {% for item in items %}
+  <div class="list-group-item">
+    <div class="d-flex justify-content-between align-items-start gap-2">
+      <div class="text-break">
+        <div>{{ item.title or "Untitled posting" }}</div>
+        <small><a href="{{ item.url }}" rel="nofollow noopener noreferrer" target="_blank"
+            class="text-body-secondary">{{ item.url }}</a></small>
+        {% if item.note %}
+        <div><small class="text-body-secondary">{{ item.note }}</small></div>
+        {% endif %}
+      </div>
+      {% if item.check %}
+      <a class="badge text-decoration-none {{ 'text-bg-danger' if item.check.indicator == 'red_flags' else 'text-bg-secondary' }}"
+        href="{{ url_for('main.result', check_id=item.check.id) }}">{{ item.check.label }}</a>
+      {% else %}
+      <form method="post" action="{{ url_for('main.check_url') }}">
+        {{ url_form.hidden_tag() }}
+        <input type="hidden" name="url" value="{{ item.url }}" />
+        <input type="hidden" name="single" value="y" />
+        <button type="submit" class="btn btn-sm btn-outline-primary text-nowrap">Check this one</button>
+      </form>
+      {% endif %}
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+<form method="post" action="{{ url_for('main.check_url') }}" class="mb-4">
+  {{ url_form.hidden_tag() }}
+  <input type="hidden" name="url" value="{{ page_url }}" />
+  <input type="hidden" name="single" value="y" />
+  <span class="text-body-secondary">Is this page really a single posting?</span>
+  <button type="submit" class="btn btn-link p-0 align-baseline">Check the page text as one posting</button>
+</form>
+
+<p class="small text-body-secondary">
+  JobCheck is a screening aid, not a verdict. "No common red flags found" does not mean a posting is safe.
+</p>
+<a class="btn btn-outline-primary" href="{{ url_for('main.index') }}">Check another posting</a>
+{% endblock %}

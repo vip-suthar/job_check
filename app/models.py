@@ -9,6 +9,7 @@ class Check(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     created_at = db.Column(db.DateTime, nullable=False, default=datetime.now)
     source = db.Column(db.String(10), nullable=False)  # form, bulk, api, url
+    source_url = db.Column(db.String(2000))  # page the text was read from, for url checks
     text = db.Column(db.Text, nullable=False)
     rule_score = db.Column(db.Integer, nullable=False)
     model_probability = db.Column(db.Float)  # TODO: filled by the ML model
