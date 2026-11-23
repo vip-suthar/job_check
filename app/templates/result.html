@@ -4,10 +4,17 @@ block content %} {% if check.indicator == "red_flags" %}
   <h1 class="h4 alert-heading mb-0">{{ check.label }}</h1>
 </div>
 {% else %}
-<div class="alert alert-secondary">
+<div class="alert alert-{{ check.risk_color }}">
   <h1 class="h4 alert-heading">{{ check.label }}</h1>
   <p class="mb-0">This does not mean the posting is safe.</p>
 </div>
+{% endif %} {% if check.model_probability is not none %}
+<p>
+  Chance of this posting being fraudulent (ML model estimate):
+  <span class="badge fs-6 bg-{{ check.risk_color }}-subtle text-{{ check.risk_color }}-emphasis">
+    {{ (check.model_probability * 100)|round|int }}%
+  </span>
+</p>
 {% endif %} {% if check.source_url %}
 <p class="small text-body-secondary text-break">
   Text read from

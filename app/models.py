@@ -1,6 +1,10 @@
 from datetime import datetime
 
 from app import db
+from detector.verdict import MODEL_THRESHOLD
+
+# only about 4% of real postings in the dev split score above this
+SUSPICIOUS_SCORE = 0.3
 
 
 class Check(db.Model):
@@ -27,6 +31,17 @@ class Check(db.Model):
                 return f"Flagged by ML model (probability {self.model_probability:.2f})"
             return f"Red flags found ({self.flag_count})"
         return "No common red flags found"
+
+    @property
+    def risk_color(self):
+        """Bootstrap color for the ML score: green for low, yellow for suspicious, red for high."""
+        if self.model_probability is None:
+            return "secondary"
+        if self.model_probability >= MODEL_THRESHOLD:
+            return "danger"
+        if self.model_probability >= SUSPICIOUS_SCORE:
+            return "warning"
+        return "success"
 
 
 class RuleHit(db.Model):

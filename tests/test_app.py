@@ -122,6 +122,12 @@ def test_dashboard(client):
     assert body.count(b"data:image/png;base64,") == 2
 
 
+def test_risk_color():
+    scores = [None, 0.1, 0.3, 0.5, 0.9]
+    colors = [Check(model_probability=p).risk_color for p in scores]
+    assert colors == ["secondary", "success", "warning", "danger", "danger"]
+
+
 def test_error_page(client):
     body = client.get("/no-such-page").data
     assert b"404 Not Found" in body

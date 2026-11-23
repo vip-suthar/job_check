@@ -35,7 +35,8 @@ def checks_over_time():
     ax.bar(days, flagged, color="#dc3545", label="Red flags found")
     ax.bar(days, clean, bottom=flagged, color="#adb5bd", label="No common red flags")
     ax.set_title(f"Checks per day, last {DAYS} days")
-    ax.yaxis.get_major_locator().set_params(integer=True)
+    ax.set_yscale("log")
+    ax.set_ylim(bottom=0.5)  # so a day with 1 check still shows a bar
     ax.legend(loc="upper left")
     ax.tick_params(axis="x", labelrotation=45)
     return png(fig)
