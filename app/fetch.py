@@ -44,8 +44,6 @@ def is_public_host(host):
 def download(url):
     #Downloads a public url and returns (final url, content type, body).
     
-    # TODO: requests looks the host up again, so DNS rebinding is not covered. Pin the checked IP
-    # before putting this on a public server.
     for _ in range(MAX_REDIRECTS + 1):
         parsed = urlparse(url)
         if parsed.scheme not in ("http", "https") or not parsed.hostname or not is_public_host(parsed.hostname):
