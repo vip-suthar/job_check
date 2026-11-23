@@ -9,6 +9,3 @@ __pycache__/
 instance/
 logs/
 backups/
-
-# large downloaded data
-data/raw/

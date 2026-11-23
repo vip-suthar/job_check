@@ -23,6 +23,8 @@ class Check(db.Model):
     @property
     def label(self):
         if self.indicator == "red_flags":
+            if self.flag_count == 0 and self.model_probability is not None:
+                return f"Flagged by ML model (probability {self.model_probability:.2f})"
             return f"Red flags found ({self.flag_count})"
         return "No common red flags found"
 
